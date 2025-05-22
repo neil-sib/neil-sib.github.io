@@ -201,29 +201,30 @@
       fill: white;
     }
     .suggested-questions {
-      margin-top: var(--space-xs); /* Further reduced from space-sm */
+      margin-top: var(--space-xs);
       display: block;
       width: 100%;
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
     }
+    
     .suggested-question {
       background: var(--suggestion-bg);
       color: var(--suggestion-color);
-      padding: 4px 8px; /* Further reduced padding */
-      border-radius: 8px; /* Reduced from 12px */
-      font-size: 14px; /* Smaller font */
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 15px;
       cursor: pointer;
       border: 1px solid var(--suggestion-border);
       transition: all 0.2s;
       text-align: center;
       word-wrap: break-word;
-      box-shadow: none; /* Removed box shadow */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 38px; /* Further reduced from 48px */
+      min-height: 44px;
     }
     .suggested-question:hover {
       background: var(--suggestion-hover);
@@ -487,14 +488,18 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       height: 38px; /* Fixed height */
       align-items: center; /* Vertical center alignment */
+      max-width: 400px; /* Added max-width */
+      margin-left: auto; /* Center horizontally */
+      margin-right: auto; /* Center horizontally */
     }
     
     .agent-option {
-      padding: var(--space-xs) var(--space-sm); /* Reduced from space-md */
-      margin: 0 var(--space-xs);
+      padding: var(--space-xs) var(--space-md); /* Increased horizontal padding */
+      margin: 0 var(--space-sm); /* Increased margin */
       border-radius: 20px;
       cursor: pointer;
-      font-size: 13px; /* Reduced from 14px */
+      font-size: 14px; /* Increased from 13px */
+      font-weight: 500; /* Added medium weight */
       transition: all 0.2s ease;
       flex: 1;
       text-align: center;
@@ -502,7 +507,9 @@
       display: flex; /* Added for better centering */
       align-items: center; /* Vertical center */
       justify-content: center; /* Horizontal center */
-      height: 26px; /* Fixed height for all options */
+      height: 28px; /* Increased height slightly */
+      white-space: nowrap; /* Prevent text wrapping */
+      min-width: 120px; /* Ensure minimum width */
     }
     
     .agent-option:hover {
@@ -584,9 +591,7 @@
     </div>
     
     <div class="agent-selector" id="agent-selector">
-      <div class="agent-option active" data-agent="ruby">Ruby</div>
-      <div class="agent-option" data-agent="rails">Rails</div>
-      <div class="agent-option" data-agent="fullstack">Fullstack</div>
+      <div class="agent-option active" data-agent="dev">Fullstack Dev</div>
       <div class="agent-option" data-agent="av">AV Systems</div>
     </div>
     
@@ -694,7 +699,7 @@
       const askedQuestions = new Set();
       const revealedCategories = new Set();
       let questionCount = 0;
-      let currentAgent = 'ruby';
+      let currentAgent = 'dev';
       
       // Token usage tracking
       const tokenUsage = {
@@ -704,30 +709,20 @@
       
       // Group questions by the agent type
       const agentQuestions = {
-        ruby: [
+        dev: [
           "What is your experience with Ruby programming?",
           "How do you approach Ruby project organization?",
           "Tell me about your experience with Ruby gems.",
-          "What Ruby-specific best practices do you follow?",
-          "How do you handle Ruby version management?"
-        ],
-        rails: [
           "Describe your experience building web applications with Ruby on Rails.",
           "What strategies did you use to optimize database performance in your applications?",
-          "How do you approach testing in Ruby on Rails applications?",
           "What Rails design patterns do you commonly implement in your projects?",
           "How do you handle authentication and authorization in Rails apps?",
           "Tell me about your Shared is Better platform.",
-          "How did you implement real-time messaging in Shared is Better?"
-        ],
-        fullstack: [
           "What UI/UX considerations guided your frontend development decisions?",
           "How did you implement and manage CI/CD pipelines in your projects?", 
-          "Describe your experience with cloud infrastructure management.",
           "What makes you stand out as a fullstack developer?",
           "What were your responsibilities at Infogain India?",
           "How do you stay updated with the latest technologies in your field?",
-          "What is your approach to mentoring junior developers?",
           "How have you used AI tools to enhance your development workflow?"
         ],
         av: [
@@ -742,7 +737,7 @@
       
       // Original categories for compatibility
       const questionCategories = {
-        rails: agentQuestions.rails,
+        rails: agentQuestions.dev.filter(q => q.includes("Rails")),
         avSystems: agentQuestions.av,
         devOps: ["How did you implement and manage CI/CD pipelines in your projects?", "Describe your experience with cloud infrastructure management."],
         codeQuality: ["What approach did you take to ensure code quality and maintainability?", "How did you approach testing in your development projects?"],
@@ -1254,7 +1249,8 @@
           
           const tokenDiv = document.createElement('div');
           tokenDiv.className = 'token-usage';
-          tokenDiv.textContent = `${currentAgent} agent • ${tokensUsed} tokens`;
+          const agentDisplayName = currentAgent === 'dev' ? 'Fullstack Dev' : 'AV Systems';
+          tokenDiv.textContent = `${agentDisplayName} • ${tokensUsed} tokens`;
           bubbleDiv.appendChild(tokenDiv);
         }
         
@@ -1673,11 +1669,22 @@
           }
         }
         
-        // Get just one random question
-        if (availableQuestions.length > 0) {
+        // Select just one question to display
+        let selectedQuestion;
+        
+        // Priority 1: If this is the first question and we're in dev mode, use Ruby question
+        const rubyQuestion = "What is your experience with Ruby programming?";
+        if (currentAgent === 'dev' && !askedQuestions.has(rubyQuestion) && availableQuestions.includes(rubyQuestion) && questionCount === 0) {
+          selectedQuestion = rubyQuestion;
+        }
+        // Priority 2: Otherwise just pick a random question
+        else if (availableQuestions.length > 0) {
           const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-          const selectedQuestion = availableQuestions[randomIndex];
-          
+          selectedQuestion = availableQuestions[randomIndex];
+        }
+        
+        // If we have a question to display, create and add it
+        if (selectedQuestion) {
           const questionDiv = document.createElement('div');
           questionDiv.className = 'suggested-question';
           questionDiv.textContent = selectedQuestion;
@@ -1760,8 +1767,16 @@
       });
       
       // Initial messages and suggested questions
-      addMessage(`Hello! I'm Neil's interactive resume. Ask me anything about his experience, skills, or background to learn more about what makes him a great candidate. For the most complete and accurate information, please use the "Reveal Full Resume" button below after exploring the chat interface.`, false);
-      displaySuggestedQuestions();
+      setTimeout(() => {
+        // Reset current agent to make sure we start with dev
+        currentAgent = 'dev';
+        
+        // Add welcome message
+        addMessage(`Hello! I'm Neil's interactive resume. Ask me anything about his experience, skills, or background to learn more about what makes him a great candidate. For the most complete and accurate information, please use the "Reveal Full Resume" button below after exploring the chat interface.`, false);
+        
+        // Show suggested questions
+        displaySuggestedQuestions();
+      }, 300); // Increased delay to ensure DOM is fully ready
       
       // Show the reveal resume button right away
       revealResumeBtn.style.display = 'block';
