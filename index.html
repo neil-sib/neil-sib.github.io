@@ -24,7 +24,7 @@
       --suggestion-hover: #d0e8ff;
       --box-shadow: rgba(0,0,0,0.1);
       --header-bg: #fff;
-      --max-content-width: 800px;
+      --max-content-width: 1000px; /* Increased from 800px */
       --line-height: 1.6;
       --space-xs: 4px;
       --space-sm: 8px;
@@ -73,50 +73,54 @@
     }
     .header {
       background: var(--header-bg);
-      padding: var(--space-md) 0;
+      padding: var(--space-sm) 0; /* Reduced from space-md */
       box-shadow: 0 2px 5px var(--box-shadow);
       text-align: center;
       position: relative;
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-sm); /* Reduced from space-md */
     }
     .name {
-      font-size: 28px;
+      font-size: 24px; /* Reduced from 28px */
       font-weight: 900;
-      margin-bottom: 2px;
+      margin-bottom: 0px; /* Reduced from 2px */
       letter-spacing: -1px;
     }
     .title {
-      font-size: 16px;
+      font-size: 14px; /* Reduced from 16px */
       color: var(--secondary-text);
+      margin: 0; /* Added */
     }
     .location {
-      font-size: 14px;
+      font-size: 13px; /* Reduced from 14px */
       color: var(--secondary-text);
-      margin-top: 2px;
+      margin-top: 0; /* Reduced from 2px */
+    }
+    .social-links {
+      margin-top: 2px !important; /* Reduced from 5px */
     }
     .chat-container {
       max-width: var(--max-content-width);
+      width: 90%; /* Changed from 100% to 90% */
       margin: 0 auto;
-      padding: var(--space-lg);
+      padding: var(--space-md);
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 120px);
-      width: 100%;
+      height: calc(100vh - 100px); /* Reduced from 120px */
       box-sizing: border-box;
       overflow: hidden;
     }
     .chat-messages {
       flex-grow: 1;
       overflow-y: auto;
-      padding: var(--space-lg);
+      padding: var(--space-md); /* Reduced from space-lg */
       background: var(--chat-bg);
       border-radius: 12px;
       box-shadow: 0 1px 3px var(--box-shadow);
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-sm); /* Reduced from space-md */
       word-wrap: break-word;
       overflow-wrap: break-word;
-      max-height: calc(100vh - 280px);
+      max-height: calc(100vh - 200px); /* Increased height by reducing from 240px */
       scroll-behavior: smooth;
     }
     .message {
@@ -157,7 +161,7 @@
     .input-area {
       display: flex;
       position: relative;
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-sm);
     }
     .chat-input {
       flex-grow: 1;
@@ -197,33 +201,34 @@
       fill: white;
     }
     .suggested-questions {
-      margin-top: var(--space-lg);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-sm);
+      margin-top: var(--space-xs); /* Further reduced from space-sm */
+      display: block;
       width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .suggested-question {
       background: var(--suggestion-bg);
       color: var(--suggestion-color);
-      padding: var(--space-md) var(--space-md);
-      border-radius: 12px;
-      font-size: var(--base-font-size);
+      padding: 4px 8px; /* Further reduced padding */
+      border-radius: 8px; /* Reduced from 12px */
+      font-size: 14px; /* Smaller font */
       cursor: pointer;
       border: 1px solid var(--suggestion-border);
       transition: all 0.2s;
       text-align: center;
       word-wrap: break-word;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: none; /* Removed box shadow */
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 60px;
+      min-height: 38px; /* Further reduced from 48px */
     }
     .suggested-question:hover {
       background: var(--suggestion-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .typing-indicator {
       display: none;
@@ -297,16 +302,16 @@
       display: none;
       background: var(--primary-color);
       color: white;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-size: 16px;
-      margin: 15px auto;
+      font-size: 15px;
+      margin: 10px auto 5px;
       cursor: pointer;
       border: none;
       transition: background-color 0.2s;
       text-align: center;
       font-weight: bold;
-      max-width: 300px;
+      max-width: 250px;
     }
     .reveal-resume-btn:hover {
       background: var(--primary-hover);
@@ -320,7 +325,7 @@
       background: var(--chat-bg);
       border-radius: 8px;
       box-shadow: 0 1px 3px var(--box-shadow);
-      width: 100%;
+      width: 90%; /* Changed from 100% to 90% */
       box-sizing: border-box;
     }
     
@@ -401,6 +406,7 @@
     @media (max-width: 768px) {
       .chat-container, .traditional-resume {
         padding: var(--space-md);
+        width: 95%; /* Changed from default to 95% */
       }
       
       .chat-messages {
@@ -413,8 +419,8 @@
       
       .suggested-question {
         font-size: 13px;
-        padding: 10px;
-        min-height: 50px;
+        padding: 6px 8px;
+        min-height: 40px;
       }
       
       .suggested-questions {
@@ -473,24 +479,30 @@
     
     .agent-selector {
       display: flex;
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-sm); /* Reduced from space-md */
       background: var(--bubble-ai);
       border-radius: 12px;
       padding: var(--space-xs);
       justify-content: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      height: 38px; /* Fixed height */
+      align-items: center; /* Vertical center alignment */
     }
     
     .agent-option {
-      padding: var(--space-xs) var(--space-md);
+      padding: var(--space-xs) var(--space-sm); /* Reduced from space-md */
       margin: 0 var(--space-xs);
       border-radius: 20px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px; /* Reduced from 14px */
       transition: all 0.2s ease;
       flex: 1;
       text-align: center;
       border: 1px solid transparent;
+      display: flex; /* Added for better centering */
+      align-items: center; /* Vertical center */
+      justify-content: center; /* Horizontal center */
+      height: 26px; /* Fixed height for all options */
     }
     
     .agent-option:hover {
@@ -503,6 +515,46 @@
       font-weight: bold;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       transform: translateY(-1px);
+    }
+
+    /* New styles for the collapsible disclaimer */
+    .disclaimer {
+      background: rgba(255,200,0,0.1); 
+      border: 1px solid rgba(255,200,0,0.3); 
+      border-radius: 8px; 
+      padding: 6px 10px; /* Reduced padding */
+      margin-bottom: 8px; /* Reduced margin */
+      font-size: 13px; /* Smaller font */
+      color: var(--text-color); 
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .disclaimer-content {
+      flex: 1;
+    }
+    
+    .disclaimer-full {
+      display: none;
+    }
+    
+    .disclaimer-toggle {
+      background: none;
+      border: none;
+      color: var(--secondary-text);
+      cursor: pointer;
+      font-size: 10px;
+      padding: 0 4px;
+      transition: transform 0.3s ease;
+    }
+    
+    .disclaimer-content.expanded .disclaimer-short {
+      display: none;
+    }
+    
+    .disclaimer-content.expanded .disclaimer-full {
+      display: inline;
     }
   </style>
 </head>
@@ -523,9 +575,12 @@
   </div>
   
   <div class="chat-container" id="chat-container">
-    <div class="disclaimer" style="background: rgba(255,200,0,0.1); border: 1px solid rgba(255,200,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 15px; font-size: 14px; color: var(--text-color); text-align: center;">
-      <strong>⚠️ Disclaimer:</strong> This interactive demo may not always produce correct answers and is meant to showcase interactive functionality. <br>
-      <strong>👁️ Please click "Reveal Full Resume" below for the most accurate information.</strong>
+    <div class="disclaimer">
+      <div class="disclaimer-content collapsed">
+        <strong>⚠️ Disclaimer:</strong> <span class="disclaimer-short">Demo showcase only. See full resume for accuracy.</span>
+        <span class="disclaimer-full">This interactive demo may not always produce correct answers and is meant to showcase interactive functionality. <strong>👁️ Please click "Reveal Full Resume" for accurate information.</strong></span>
+      </div>
+      <button class="disclaimer-toggle">▼</button>
     </div>
     
     <div class="agent-selector" id="agent-selector">
@@ -558,7 +613,7 @@
       <!-- Suggested questions will be added here by JavaScript -->
     </div>
     
-    <button class="reveal-resume-btn" id="reveal-resume-btn">👁️ Reveal Full Resume</button>
+    <button class="reveal-resume-btn" id="reveal-resume-btn" style="display: block;">👁️ Reveal Full Resume</button>
   </div>
   
   <div class="traditional-resume" id="traditional-resume">
@@ -626,6 +681,14 @@
       const chatContainer = document.getElementById('chat-container');
       const traditionalResume = document.getElementById('traditional-resume');
       const agentSelector = document.getElementById('agent-selector');
+      const disclaimerToggle = document.querySelector('.disclaimer-toggle');
+      const disclaimerContent = document.querySelector('.disclaimer-content');
+      
+      // Disclaimer toggle functionality
+      disclaimerToggle.addEventListener('click', function() {
+        disclaimerContent.classList.toggle('expanded');
+        this.textContent = disclaimerContent.classList.contains('expanded') ? '▲' : '▼';
+      });
       
       // Track asked questions, count, and answer categories
       const askedQuestions = new Set();
@@ -1502,7 +1565,7 @@
               const response = `<p>Shared is Better (<a href="http://sharedisbetter.com/" target="_blank">sharedisbetter.com</a>) is a feature-rich community platform I developed using Ruby on Rails. It enables:</p>
               <ul>
                 <li class="list-item">Community creation and management with role-based permissions</li>
-                <li class="list-item">Resource sharing with state management (available, taken, etc.)</li>
+                <li class="list-item">Resource sharing with state management (upcoming, available, taken, etc.)</li>
                 <li class="list-item">Event organization with RSVP capabilities</li>
                 <li class="list-item">Real-time messaging and notifications</li>
                 <li class="list-item">Content moderation workflows</li>
@@ -1583,13 +1646,13 @@
         let availableQuestions = questions.filter(q => !askedQuestions.has(q));
         
         // If we have no available questions from this agent, try to get some from all agents
-        if (availableQuestions.length < 3) {
+        if (availableQuestions.length === 0) {
           // First try from the current agent's questions
           const agentSpecificQuestions = agentQuestions[currentAgent] || [];
           const remainingAgentQuestions = agentSpecificQuestions.filter(q => !askedQuestions.has(q));
           
           // If we still need more, get from all agents
-          if (remainingAgentQuestions.length < 3) {
+          if (remainingAgentQuestions.length === 0) {
             // Get random questions from all agents, prioritizing current agent
             const randomUnasked = allAgentQuestions
               .filter(q => !askedQuestions.has(q))
@@ -1602,7 +1665,7 @@
                 // Otherwise random
                 return 0.5 - Math.random();
               })
-              .slice(0, 3 - Math.min(remainingAgentQuestions.length, 3));
+              .slice(0, 1);
             
             availableQuestions = [...remainingAgentQuestions, ...randomUnasked];
           } else {
@@ -1610,43 +1673,20 @@
           }
         }
         
-        // Show up to 3 diverse questions
-        const displayQuestions = [];
-        
-        // Get questions trying to avoid similar ones
-        for (const q of availableQuestions) {
-          // Simple check to avoid similar questions - just ensure questions start differently
-          const firstFewWords = q.split(' ').slice(0, 3).join(' ').toLowerCase();
-          const isSimilar = displayQuestions.some(existingQ => 
-            existingQ.split(' ').slice(0, 3).join(' ').toLowerCase() === firstFewWords
-          );
+        // Get just one random question
+        if (availableQuestions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+          const selectedQuestion = availableQuestions[randomIndex];
           
-          if (!isSimilar) {
-            displayQuestions.push(q);
-            if (displayQuestions.length >= 3) break;
-          }
-        }
-        
-        // If we still need more questions due to similarity filtering
-        if (displayQuestions.length < 3) {
-          for (const q of availableQuestions) {
-            if (!displayQuestions.includes(q)) {
-              displayQuestions.push(q);
-              if (displayQuestions.length >= 3) break;
-            }
-          }
-        }
-        
-        displayQuestions.forEach(question => {
           const questionDiv = document.createElement('div');
           questionDiv.className = 'suggested-question';
-          questionDiv.textContent = question;
+          questionDiv.textContent = selectedQuestion;
           questionDiv.addEventListener('click', () => {
-            chatInput.value = question;
+            chatInput.value = selectedQuestion;
             // Add to asked questions set
-            askedQuestions.add(question);
+            askedQuestions.add(selectedQuestion);
             // Track category for diversity
-            const category = questionToCategoryMap[question];
+            const category = questionToCategoryMap[selectedQuestion];
             if (category) {
               revealedCategories.add(category);
             }
@@ -1661,7 +1701,7 @@
             sendMessage();
           });
           suggestedQuestions.appendChild(questionDiv);
-        });
+        }
       }
       
       // Function to send a message
