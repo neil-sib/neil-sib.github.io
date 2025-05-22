@@ -720,6 +720,7 @@
   </div>
   
   <div class="traditional-resume" id="traditional-resume">
+    <button class="close-resume-btn" id="close-resume-btn">✕ Back to Chat</button>
     <div class="section-title">WORK EXPERIENCE</div>
 
     <div class="job-title">Field Service Technician / AV Integration</div>
@@ -801,6 +802,24 @@
       const agentSelector = document.getElementById('agent-selector');
       const disclaimerToggle = document.querySelector('.disclaimer-toggle');
       const disclaimerContent = document.querySelector('.disclaimer-content');
+      const closeResumeBtn = document.getElementById('close-resume-btn');
+      
+      // Close resume button functionality
+      closeResumeBtn.addEventListener('click', function() {
+        traditionalResume.classList.remove('matrix-reveal');
+        traditionalResume.style.display = 'none';
+        chatContainer.classList.remove('matrix-effect');
+        chatContainer.style.display = 'flex';  // Changed from 'block' to 'flex'
+        chatContainer.style.height = 'calc(100vh - 100px)';  // Restore original height
+        
+        // Force a reflow of the chat messages container
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.style.display = 'none';
+        setTimeout(() => {
+          chatMessages.style.display = 'block';
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 0);
+      });
       
       // Disclaimer toggle functionality
       disclaimerToggle.addEventListener('click', function() {
