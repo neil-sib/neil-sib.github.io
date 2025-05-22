@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-theme">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neil Fernandes - AI Chat Resume</title>
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --primary-color-rgb: 0, 123, 255;
+      --primary-hover: #0069d9;
+      --background-color: #f5f5f5;
+      --chat-bg: #fff;
+      --text-color: #111;
+      --secondary-text: #444;
+      --muted-text: #777;
+      --border-color: #ddd;
+      --bubble-user: #007bff;
+      --bubble-ai: #f1f1f1;
+      --typing-bg: #f1f1f1;
+      --suggestion-bg: #e9f5ff;
+      --suggestion-color: #007bff;
+      --suggestion-border: #cce5ff;
+      --suggestion-hover: #d0e8ff;
+      --box-shadow: rgba(0,0,0,0.1);
+      --header-bg: #fff;
+      --max-content-width: 800px;
+      --line-height: 1.6;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --link-color: #0066cc;
+      --link-color-dark: #4d94ff;
+      --base-font-size: 16px;
+      --large-font-size: 18px;
+    }
+
+    .dark-theme {
+      --primary-color: #2196f3;
+      --primary-hover: #1976d2;
+      --background-color: #121212;
+      --chat-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --secondary-text: #b0b0b0;
+      --muted-text: #808080;
+      --border-color: #333;
+      --bubble-user: #2196f3;
+      --bubble-ai: #2a2a2a;
+      --typing-bg: #2a2a2a;
+      --suggestion-bg: #1a3a60;
+      --suggestion-color: #64b5f6;
+      --suggestion-border: #1e4976;
+      --suggestion-hover: #1e4976;
+      --box-shadow: rgba(0,0,0,0.3);
+      --header-bg: #1a1a1a;
+      --link-color-dark: #64b5f6;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text-color);
+      background: var(--background-color);
+      margin: 0;
+      padding: 0;
+      font-size: var(--base-font-size);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease;
+      line-height: var(--line-height);
+    }
+    .header {
+      background: var(--header-bg);
+      padding: var(--space-md) 0;
+      box-shadow: 0 2px 5px var(--box-shadow);
+      text-align: center;
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+    .name {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 2px;
+      letter-spacing: -1px;
+    }
+    .title {
+      font-size: 16px;
+      color: var(--secondary-text);
+    }
+    .location {
+      font-size: 14px;
+      color: var(--secondary-text);
+      margin-top: 2px;
+    }
+    .chat-container {
+      max-width: var(--max-content-width);
+      margin: 0 auto;
+      padding: var(--space-lg);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 120px);
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: var(--space-lg);
+      background: var(--chat-bg);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px var(--box-shadow);
+      margin-bottom: var(--space-lg);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-height: calc(100vh - 280px);
+      scroll-behavior: smooth;
+    }
+    .message {
+      margin-bottom: var(--space-lg);
+      display: flex;
+    }
+    .message.user {
+      justify-content: flex-end;
+    }
+    .message-bubble {
+      max-width: 85%;
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 18px;
+      line-height: var(--line-height);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: var(--large-font-size);
+    }
+    .user .message-bubble {
+      background: var(--bubble-user);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .ai .message-bubble {
+      background: var(--bubble-ai);
+      border-bottom-left-radius: 4px;
+    }
+    .message-time {
+      font-size: 14px;
+      color: var(--primary-color);
+      margin-top: 5px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .ai .message-time {
+      text-align: left;
+    }
+    .input-area {
+      display: flex;
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+    .chat-input {
+      flex-grow: 1;
+      padding: 15px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      font-size: var(--large-font-size);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--chat-bg);
+      color: var(--text-color);
+    }
+    .chat-input:focus {
+      border-color: var(--primary-color);
+    }
+    .send-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+      margin-left: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      flex-shrink: 0;
+    }
+    .send-button:hover {
+      background: var(--primary-hover);
+    }
+    .send-button svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+    .suggested-questions {
+      margin-top: var(--space-lg);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-sm);
+      width: 100%;
+    }
+    .suggested-question {
+      background: var(--suggestion-bg);
+      color: var(--suggestion-color);
+      padding: var(--space-md) var(--space-md);
+      border-radius: 12px;
+      font-size: var(--base-font-size);
+      cursor: pointer;
+      border: 1px solid var(--suggestion-border);
+      transition: all 0.2s;
+      text-align: center;
+      word-wrap: break-word;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+    }
+    .suggested-question:hover {
+      background: var(--suggestion-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .typing-indicator {
+      display: none;
+      padding: var(--space-md) var(--space-md);
+      background: var(--typing-bg);
+      border-radius: 18px;
+      margin-bottom: var(--space-md);
+      width: fit-content;
+      border-bottom-left-radius: 4px;
+    }
+    .typing-indicator span {
+      height: 8px;
+      width: 8px;
+      background: var(--muted-text);
+      display: inline-block;
+      border-radius: 50%;
+      margin-right: 3px;
+      animation: typing 1s infinite;
+    }
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+      margin-right: 0;
+    }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .list-item {
+      margin-bottom: var(--space-md);
+      font-size: var(--large-font-size);
+    }
+    ul {
+      margin: var(--space-sm) 0 var(--space-md) var(--space-lg);
+      padding: 0;
+    }
+    .welcome-message {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .theme-toggle {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: var(--secondary-text);
+    }
+    .context-suggestion {
+      font-style: italic;
+      margin-top: 10px;
+      color: var(--primary-color);
+    }
+    strong {
+      color: var(--primary-color);
+    }
+    .topic-suggestions {
+      margin-top: 12px;
+    }
+    .topic-label {
+      font-size: 13px;
+      color: var(--muted-text);
+      margin-bottom: 6px;
+    }
+    .reveal-resume-btn {
+      display: none;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 15px auto;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+      text-align: center;
+      font-weight: bold;
+      max-width: 300px;
+    }
+    .reveal-resume-btn:hover {
+      background: var(--primary-hover);
+    }
+    
+    .traditional-resume {
+      display: none;
+      padding: var(--space-xl);
+      max-width: var(--max-content-width);
+      margin: 0 auto;
+      background: var(--chat-bg);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px var(--box-shadow);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: var(--space-xl);
+      margin-bottom: var(--space-sm);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--text-color);
+      padding-bottom: var(--space-xs);
+      color: var(--text-color);
+    }
+    
+    .job-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: var(--space-xs);
+      color: var(--text-color);
+    }
+    
+    .company-duration {
+      font-size: 13px;
+      font-style: italic;
+      margin-bottom: var(--space-sm);
+      color: var(--secondary-text);
+    }
+    
+    .edu-list {
+      margin: 0 0 var(--space-md) 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    .edu-list li {
+      margin-bottom: var(--space-xs);
+      font-size: 15px;
+    }
+    
+    .skills-section {
+      margin-bottom: var(--space-md);
+      font-size: 15px;
+    }
+    
+    .skills-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-xl);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .skills-flex span {
+      white-space: nowrap;
+    }
+    
+    .matrix-effect {
+      animation: matrixFade 2s forwards;
+    }
+    
+    @keyframes matrixFade {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.95); filter: blur(2px); }
+      100% { opacity: 0; transform: scale(0.9); filter: blur(5px); display: none; }
+    }
+    
+    .matrix-reveal {
+      animation: matrixReveal 1.5s forwards;
+      animation-delay: 1s;
+    }
+    
+    @keyframes matrixReveal {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .chat-container, .traditional-resume {
+        padding: var(--space-md);
+      }
+      
+      .chat-messages {
+        padding: var(--space-md);
+      }
+      
+      .message-bubble {
+        max-width: 90%;
+      }
+      
+      .suggested-question {
+        font-size: 13px;
+        padding: 10px;
+        min-height: 50px;
+      }
+      
+      .suggested-questions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .skills-flex {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .skills-flex span {
+        white-space: normal;
+      }
+      
+      .agent-selector {
+        padding: 4px;
+      }
+      
+      .agent-option {
+        padding: 8px 4px;
+        font-size: 12px;
+      }
+    }
+
+    .ai .message-bubble a {
+      color: var(--link-color);
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    .dark-theme .ai .message-bubble a {
+      color: var(--link-color-dark);
+    }
+    
+    .token-usage {
+      font-size: 12px;
+      color: var(--secondary-text);
+      margin-top: 3px;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .token-usage::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      opacity: 0.6;
+    }
+    
+    .agent-selector {
+      display: flex;
+      margin-bottom: var(--space-md);
+      background: var(--bubble-ai);
+      border-radius: 12px;
+      padding: var(--space-xs);
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .agent-option {
+      padding: var(--space-xs) var(--space-md);
+      margin: 0 var(--space-xs);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+    
+    .agent-option:hover {
+      background: rgba(var(--primary-color-rgb), 0.1);
+    }
+    
+    .agent-option.active {
+      background: var(--primary-color);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">Neil Fernandes</div>
+    <div class="title">Fullstack Developer</div>
+    <div class="location">📍 Toronto, 🇨🇦🏒🍁</div>
+    <div class="social-links" style="margin-top: 5px;">
+      <a href="https://www.linkedin.com/in/neilfernandes-ca/" target="_blank" style="color: var(--primary-color); text-decoration: none; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+        </svg>
+        LinkedIn
+      </a>
+    </div>
+    <button class="theme-toggle" id="theme-toggle">🌓</button>
+  </div>
+  
+  <div class="chat-container" id="chat-container">
+    <div class="disclaimer" style="background: rgba(255,200,0,0.1); border: 1px solid rgba(255,200,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 15px; font-size: 14px; color: var(--text-color); text-align: center;">
+      <strong>⚠️ Disclaimer:</strong> This interactive demo may not always produce correct answers and is meant to showcase interactive functionality. <br>
+      <strong>👁️ Please click "Reveal Full Resume" below for the most accurate information.</strong>
+    </div>
+    
+    <div class="agent-selector" id="agent-selector">
+      <div class="agent-option active" data-agent="ruby">Ruby</div>
+      <div class="agent-option" data-agent="rails">Rails</div>
+      <div class="agent-option" data-agent="fullstack">Fullstack</div>
+      <div class="agent-option" data-agent="av">AV Systems</div>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages">
+      <!-- Messages will be added here by JavaScript -->
+    </div>
+    
+    <div class="typing-indicator" id="typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <div class="input-area">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything about my experience..." autocomplete="off">
+      <button class="send-button" id="send-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="suggested-questions" id="suggested-questions">
+      <!-- Suggested questions will be added here by JavaScript -->
+    </div>
+    
+    <button class="reveal-resume-btn" id="reveal-resume-btn">👁️ Reveal Full Resume</button>
+  </div>
+  
+  <div class="traditional-resume" id="traditional-resume">
+    <div class="section-title">WORK EXPERIENCE</div>
+
+    <div class="job-title">Field Service Technician / AV Integration</div>
+    <div class="company-duration">Global Unified Solution Services | 2023–2025</div>
+    <ul>
+      <li>Commissioned and tested AV systems alongside senior programmers with Crestron, Biamp, QSC, Cisco, Polycom, Extron, Shure, Q-SYS, speakers, mics, and displays.</li>
+      <li>Performed diagnostics and troubleshooting both remotely and on-site, ensuring interoperability and reliability across all AV components.</li>
+      <li>Worked on rack builds, cable management, and installed displays, projectors, video walls (Samsung, LG, Epson, Christie, Sony), microphones, and speakers.</li>
+      <li>Prepared commissioning reports and documentation, collecting and verifying IP addresses, MAC addresses, and serial numbers for all devices.</li>
+      <li>Coordinated with project managers and clients to ensure AV system designs met functional and aesthetic requirements, enhancing customer satisfaction.</li>
+      <li>Trained junior technicians in AV system staging, configuration, testing, and quality assurance.</li>
+    </ul>
+
+    <div class="job-title">Fullstack Consultant / Development</div>
+    <div class="company-duration">Infogain India Pvt Ltd | 2016–2022</div>
+    <ul>
+      <li>Developed fullstack web applications using Ruby on Rails, PostgreSQL, and implemented RESTful APIs for system integrations.</li>
+      <li>Built responsive user interfaces with HTML, CSS, JavaScript, and Stimulus JS, collaborating with UI/UX teams.</li>
+      <li>Automated CI/CD pipelines and deployment workflows using CircleCI and GitHub Actions.</li>
+      <li>Managed cloud infrastructure on Heroku, AWS, and DigitalOcean, optimizing performance and security.</li>
+      <li>Conducted code reviews and mentored junior developers to improve code quality and adherence to best practices.</li>
+      <li>Integrated AI-powered tools and automation scripts to optimize development workflows and increase team productivity.</li>
+    </ul>
+
+    <div class="section-title">EDUCATION</div>
+    <ul class="edu-list">
+      <li><strong>MCA – Master of Computer Applications</strong>, University of Mumbai, 2015</li>
+      <li><strong>BCA – Bachelor of Computer Applications</strong>, Tilak Maharashtra University, 2011</li>
+      <li><strong>B.Com – Bachelor of Commerce</strong>, University of Mumbai, 2011</li>
+      <li><strong>Crestron Level 1 Programmer</strong>, 2023</li>
+    </ul>
+
+    <div class="section-title">TECHNICAL & PERSONAL SKILLS</div>
+    <div class="skills-section">
+      <div class="skills-flex">
+        <span><strong>Languages & Frameworks:</strong> Crestron SIMPL, Crestron Construct, C#, VTPro-e, Dante, Cisco UC, Polycom, <br> MS Teams, Ruby on Rails, JavaScript, HTML/CSS, SQL</span>
+      </div>
+      <div class="skills-flex">
+        <span><strong>DevOps & Tools:</strong> Git, GitHub, Heroku, AWS, Docker, CircleCI</span>
+        <span><strong>AI & Productivity:</strong> ChatGPT, Claude AI, Cursor, Copilot</span>
+      </div>
+      <div class="skills-flex">
+        <span><strong>Project Experience:</strong> Agile, remote collaboration, user testing</span>
+        <span><strong>Certifications:</strong> Pursuing Crestron Level 2, CTS</span>
+      </div>
+      <div class="skills-flex">
+        <span><strong>Soft Skills:</strong> Strong communicator, self-starter, highly adaptable</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const chatMessages = document.getElementById('chat-messages');
+      const chatInput = document.getElementById('chat-input');
+      const sendButton = document.getElementById('send-button');
+      const suggestedQuestions = document.getElementById('suggested-questions');
+      const typingIndicator = document.getElementById('typing-indicator');
+      const themeToggle = document.getElementById('theme-toggle');
+      const revealResumeBtn = document.getElementById('reveal-resume-btn');
+      const chatContainer = document.getElementById('chat-container');
+      const traditionalResume = document.getElementById('traditional-resume');
+      const agentSelector = document.getElementById('agent-selector');
+      
+      // Track asked questions, count, and answer categories
+      const askedQuestions = new Set();
+      const revealedCategories = new Set();
+      let questionCount = 0;
+      let currentAgent = 'ruby';
+      
+      // Token usage tracking
+      const tokenUsage = {
+        total: 0,
+        byQuestion: []
+      };
+      
+      // Group questions by the agent type
+      const agentQuestions = {
+        ruby: [
+          "What is your experience with Ruby programming?",
+          "How do you approach Ruby project organization?",
+          "Tell me about your experience with Ruby gems.",
+          "What Ruby-specific best practices do you follow?",
+          "How do you handle Ruby version management?"
+        ],
+        rails: [
+          "Describe your experience building web applications with Ruby on Rails.",
+          "What strategies did you use to optimize database performance in your applications?",
+          "How do you approach testing in Ruby on Rails applications?",
+          "What Rails design patterns do you commonly implement in your projects?",
+          "How do you handle authentication and authorization in Rails apps?",
+          "Tell me about your Shared is Better platform.",
+          "How did you implement real-time messaging in Shared is Better?"
+        ],
+        fullstack: [
+          "What UI/UX considerations guided your frontend development decisions?",
+          "How did you implement and manage CI/CD pipelines in your projects?", 
+          "Describe your experience with cloud infrastructure management.",
+          "What makes you stand out as a fullstack developer?",
+          "What were your responsibilities at Infogain India?",
+          "How do you stay updated with the latest technologies in your field?",
+          "What is your approach to mentoring junior developers?",
+          "How have you used AI tools to enhance your development workflow?"
+        ],
+        av: [
+          "Explain your experience with AV systems and technology integration.", 
+          "What did you do at Global Unified Solution Services?", 
+          "Can you tell me about your experience with Crestron programming?", 
+          "How have you applied your technical skills in AV integration projects?",
+          "Tell me about a challenging technical problem you solved in AV integration.",
+          "What experience do you have with troubleshooting AV systems?"
+        ]
+      };
+      
+      // Original categories for compatibility
+      const questionCategories = {
+        rails: agentQuestions.rails,
+        avSystems: agentQuestions.av,
+        devOps: ["How did you implement and manage CI/CD pipelines in your projects?", "Describe your experience with cloud infrastructure management."],
+        codeQuality: ["What approach did you take to ensure code quality and maintainability?", "How did you approach testing in your development projects?"],
+        troubleshooting: ["How do you handle troubleshooting complex technical issues?", "Tell me about a challenging technical problem you solved in your previous role."],
+        ui: ["What UI/UX considerations guided your frontend development decisions?"],
+        ai: ["How have you used AI tools to enhance your development workflow?"],
+        education: ["Tell me about your educational background."],
+        mentoring: ["What is your approach to mentoring junior developers?"],
+        learning: ["How do you stay updated with the latest technologies in your field?", "Tell me about a project where you had to learn a new technology quickly."],
+        career: ["What were your responsibilities at Infogain India?", "What makes you stand out as a fullstack developer?", "Describe your experience with Agile development methodologies."],
+        sharedIsBetter: [
+          "Tell me about your Shared is Better platform.",
+          "What was your approach to building the community features in Shared is Better?",
+          "How did you implement real-time messaging in Shared is Better?",
+          "What technical challenges did you face with the Shared is Better platform?",
+          "How does the resource sharing system work in Shared is Better?",
+          "How did you handle image uploads and processing in Shared is Better?"
+        ]
+      };
+      
+      // Flatten the categories to map questions to their category
+      const questionToCategoryMap = {};
+      for (const [category, questions] of Object.entries(questionCategories)) {
+        for (const question of questions) {
+          questionToCategoryMap[question] = category;
+        }
+      }
+      
+      // Create a flattened array of all questions
+      const allQuestions = Object.values(questionCategories).flat();
+      
+      // Combine all agent questions for total question pool
+      const allAgentQuestions = Object.values(agentQuestions).flat();
+      
+      // Resume data (knowledge base)
+      const resumeData = {
+        personalInfo: {
+          name: "Neil Fernandes",
+          location: "Mississauga, ON",
+          title: "Fullstack Developer"
+        },
+        workExperience: [
+          {
+            title: "Field Service Technician / AV Integration",
+            company: "Global Unified Solution Services",
+            duration: "2023–2025",
+            responsibilities: [
+              "Commissioned and tested AV systems alongside senior programmers with Crestron, Biamp, QSC, Cisco, Polycom, Extron, Shure, Q-SYS, speakers, mics, and displays.",
+              "Performed diagnostics and troubleshooting both remotely and on-site, ensuring interoperability and reliability across all AV components.",
+              "Worked on rack builds, cable management, and installed displays, projectors, video walls (Samsung, LG, Epson, Christie, Sony), microphones, and speakers.",
+              "Prepared commissioning reports and documentation, collecting and verifying IP addresses, MAC addresses, and serial numbers for all devices.",
+              "Coordinated with project managers and clients to ensure AV system designs met functional and aesthetic requirements, enhancing customer satisfaction.",
+              "Trained junior technicians in AV system staging, configuration, testing, and quality assurance."
+            ]
+          },
+          {
+            title: "Fullstack Consultant / Development",
+            company: "Infogain India Pvt Ltd",
+            duration: "2016–2022",
+            responsibilities: [
+              "Developed fullstack web applications using Ruby on Rails, PostgreSQL, and implemented RESTful APIs for system integrations.",
+              "Built responsive user interfaces with HTML, CSS, JavaScript, and Stimulus JS, collaborating with UI/UX teams.",
+              "Automated CI/CD pipelines and deployment workflows using CircleCI and GitHub Actions.",
+              "Managed cloud infrastructure on Heroku, AWS, and DigitalOcean, optimizing performance and security.",
+              "Conducted code reviews and mentored junior developers to improve code quality and adherence to best practices.",
+              "Integrated AI-powered tools and automation scripts to optimize development workflows and increase team productivity."
+            ]
+          }
+        ],
+        education: [
+          "MCA – Master of Computer Applications, University of Mumbai, 2015",
+          "BCA – Bachelor of Computer Applications, Tilak Maharashtra University, 2011",
+          "B.Com – Bachelor of Commerce, University of Mumbai, 2011",
+          "Crestron Level 1 Programmer, 2023"
+        ],
+        skills: {
+          languages: "Crestron SIMPL, Crestron Construct, C#, VTPro-e, Dante, Cisco UC, Polycom, MS Teams, Ruby on Rails, JavaScript, HTML/CSS, SQL",
+          devops: "Git, GitHub, Heroku, AWS, Docker, CircleCI",
+          ai: "ChatGPT, Claude AI, Cursor, Copilot",
+          project: "Agile, remote collaboration, user testing",
+          certifications: "Pursuing Crestron Level 2, CTS",
+          soft: "Strong communicator, self-starter, highly adaptable"
+        },
+        projects: [
+          {
+            name: "Shared is Better",
+            url: "http://sharedisbetter.com/",
+            description: "A feature-rich community platform for resource sharing, event organization, and community building, built with Ruby on Rails.",
+            role: "Lead Developer",
+            features: [
+              {
+                category: "Communities",
+                items: [
+                  "Create and join communities based on shared interests",
+                  "Community membership approval workflow",
+                  "Community admin roles and permissions",
+                  "Community-specific content sharing"
+                ]
+              },
+              {
+                category: "Resource Sharing",
+                items: [
+                  "Post creation with state lifecycle (upcoming, available, need, taken, archived)",
+                  "Multiple image attachments for posts",
+                  "Cross-community sharing",
+                  "Comments and likes with notification system"
+                ]
+              },
+              {
+                category: "Event Management",
+                items: [
+                  "Event creation with start/end times and location",
+                  "RSVP system with approval workflow",
+                  "Capacity management based on community size",
+                  "Recurring event options"
+                ]
+              },
+              {
+                category: "Messaging and Communication",
+                items: [
+                  "Direct messages between users (real-time)",
+                  "Community wall posts for announcements",
+                  "Real-time notifications",
+                  "Email notifications for key actions"
+                ]
+              },
+              {
+                category: "User Management",
+                items: [
+                  "Authentication with Devise",
+                  "User profiles with customizable information",
+                  "Username-based friendly URLs",
+                  "Avatar attachments with secure handling"
+                ]
+              },
+              {
+                category: "Content Moderation",
+                items: [
+                  "Reporting system for inappropriate content",
+                  "Admin review interface",
+                  "Moderation workflow (pending → investigating → resolved/ignored)",
+                  "Notification system for report resolution"
+                ]
+              }
+            ],
+            technicalStack: {
+              framework: "Ruby on Rails 7.1",
+              database: "PostgreSQL with UUID primary keys",
+              frontend: [
+                "TailwindCSS for styling",
+                "Hotwire (Turbo/Stimulus) for dynamic UI",
+                "Responsive design with mobile-first approach"
+              ],
+              authentication: "Devise with confirmable module",
+              storage: "ActiveStorage with secure file handling",
+              backgroundProcessing: "ActiveJob with queue adapters",
+              realTimeFeatures: "ActionCable for WebSockets",
+              urlHandling: "FriendlyID for human-readable URLs",
+              stateManagement: "AASM for model states"
+            },
+            gems: [
+              "devise", "pundit", "aasm", "active_storage_validations", "aws-sdk-s3",
+              "bcrypt", "counter_culture", "friendly_id", "image_processing", "noticed",
+              "pagy", "rack-attack", "ransack", "redis", "sendgrid-ruby", "sentry-rails",
+              "sentry-ruby", "sidekiq", "view_component"
+            ]
+          }
+        ]
+      };
+      
+      // Topic categories for better suggestions
+      const topicCategories = {
+        development: ["Rails", "web development", "frontend", "backend", "fullstack", "JavaScript", "UI/UX", "API", "SQL", "database"],
+        avTech: ["AV systems", "Crestron", "Biamp", "QSC", "Cisco", "Polycom", "integration", "displays", "projectors", "audio"],
+        devOps: ["CI/CD", "infrastructure", "cloud", "AWS", "Heroku", "Docker", "deployment", "automation"],
+        skills: ["technical skills", "programming languages", "frameworks", "tools", "certifications", "education"],
+        softSkills: ["communication", "teamwork", "problem-solving", "mentoring", "leadership"],
+        sharedIsBetter: ["Shared is Better", "community platform", "resource sharing", "event management"]
+      };
+      
+      // First, let's create a question-answer mapping object
+      const questionAnswerMap = {
+        // AI tools question
+        "ai_tools": {
+          keywords: ["ai tools", "chatgpt", "claude", "github copilot", "cursor"],
+          response: `<p>I leverage AI tools to enhance my development workflow in several ways:</p>
+          <ul>
+            <li class="list-item"><strong>Code Assistance:</strong> Using GitHub Copilot and Cursor IDE for intelligent code suggestions and autocompletion</li>
+            <li class="list-item"><strong>Problem Solving:</strong> Leveraging ChatGPT and Claude AI to brainstorm solutions and debug complex issues</li>
+            <li class="list-item"><strong>Test Generation:</strong> Creating comprehensive test cases and edge case scenarios</li>
+            <li class="list-item"><strong>Documentation:</strong> Generating and improving code documentation and API descriptions</li>
+            <li class="list-item"><strong>Code Refactoring:</strong> Identifying opportunities for code optimization and cleaner implementations</li>
+            <li class="list-item"><strong>Learning:</strong> Rapidly understanding new libraries and frameworks through interactive explanations</li>
+            <li class="list-item"><strong>Automation:</strong> Creating scripts for repetitive tasks and workflow improvements</li>
+          </ul>
+          <p>I've found that AI tools significantly boost productivity while maintaining code quality, especially when used thoughtfully alongside human expertise and review.</p>`
+        },
+        
+        // Fullstack developer standout qualities
+        "standout_developer": {
+          keywords: ["stand out", "unique", "makes you", "fullstack developer", "different"],
+          response: `<p>What makes me stand out as a fullstack developer:</p>
+          <ul>
+            <li class="list-item"><strong>End-to-End Ownership:</strong> I comfortably handle everything from database design to frontend polishing, taking full responsibility for features</li>
+            <li class="list-item"><strong>Technical Versatility:</strong> My experience spans both traditional development (Rails/JS) and AV systems integration, giving me a unique perspective</li>
+            <li class="list-item"><strong>Performance Focus:</strong> I prioritize application performance at all levels - database optimization, efficient backend code, and responsive frontends</li>
+            <li class="list-item"><strong>User-Centered Design:</strong> I think beyond code to how features actually enhance the user experience</li>
+            <li class="list-item"><strong>Continuous Learning:</strong> I actively stay current with emerging technologies and best practices through communities, courses, and practical experimentation</li>
+            <li class="list-item"><strong>Communication Skills:</strong> I excel at translating technical concepts for non-technical stakeholders and collaborating effectively with cross-functional teams</li>
+          </ul>
+          <p>This combination of technical depth, breadth of experience, and soft skills allows me to deliver complete solutions that are both technically sound and user-friendly.</p>`
+        },
+        
+        // Database performance optimization
+        "database_performance": {
+          keywords: ["database performance", "optimize database", "database optimization", "database strategies"],
+          response: `<p>For database performance optimization, I've implemented several strategies:</p>
+          <ul>
+            <li class="list-item"><strong>N+1 Query Prevention:</strong> Used the Bullet gem to identify and fix N+1 query issues during development</li>
+            <li class="list-item"><strong>Eager Loading:</strong> Implemented proper includes/preload/eager_load to reduce database roundtrips</li>
+            <li class="list-item"><strong>Efficient Indexing:</strong> Created targeted indexes based on query patterns and used tools like pg_stat_statements to identify slow queries</li>
+            <li class="list-item"><strong>Query Optimization:</strong> Rewritten complex queries using EXPLAIN ANALYZE for guidance and used database-specific features like PostgreSQL's array functions</li>
+            <li class="list-item"><strong>Connection Pooling:</strong> Configured proper pool sizes based on workload characteristics</li>
+            <li class="list-item"><strong>Caching Strategies:</strong> Implemented multi-level caching with Redis for frequently accessed data</li>
+            <li class="list-item"><strong>Background Processing:</strong> Moved heavy database operations to background jobs using Sidekiq</li>
+            <li class="list-item"><strong>Database Maintenance:</strong> Regularly ran VACUUM and ANALYZE on PostgreSQL to maintain performance</li>
+          </ul>
+          <p>These approaches consistently improved application response times and allowed for better scalability under increasing load.</p>`
+        },
+        
+        // Testing approach
+        "testing_approach": {
+          keywords: ["testing", "test approach", "how do you test"],
+          response: `<p>My approach to testing involves multiple layers:</p>
+          <ul>
+            <li class="list-item"><strong>Unit Tests:</strong> For individual components and functions</li>
+            <li class="list-item"><strong>Integration Tests:</strong> For API endpoints and service interactions</li>
+            <li class="list-item"><strong>System/End-to-End Tests:</strong> For critical user flows</li>
+            <li class="list-item"><strong>Test-Driven Development:</strong> For complex features</li>
+            <li class="list-item"><strong>Automated Testing:</strong> As part of the CI/CD pipeline</li>
+            <li class="list-item"><strong>Performance Testing:</strong> For critical paths</li>
+          </ul>
+          <p>I believe in pragmatic testing that focuses on high-value areas while maintaining development velocity.</p>`
+        },
+        
+        // Staying updated with technology
+        "staying_updated": {
+          keywords: ["stay updated", "latest technologies", "keep up with technology"],
+          response: `<p>To stay updated with the latest technologies in my field, I:</p>
+          <ul>
+            <li class="list-item"><strong>Community Engagement:</strong> Follow Ruby on Rails communities on Reddit, Twitter, and Discord</li>
+            <li class="list-item"><strong>Problem Solving:</strong> Participate actively on Stack Overflow to solve and learn from real-world problems</li>
+            <li class="list-item"><strong>Video Learning:</strong> Watch YouTube tutorials and conference talks about new framework features</li>
+            <li class="list-item"><strong>Newsletters:</strong> Subscribe to technical newsletters like Ruby Weekly and Rails Weekly</li>
+            <li class="list-item"><strong>Structured Learning:</strong> Read books and take online courses on platforms like Udemy and Pluralsight</li>
+            <li class="list-item"><strong>Open Source:</strong> Contribute to open source projects to learn from other developers</li>
+            <li class="list-item"><strong>In-person Events:</strong> Attend local meetups and conferences when possible</li>
+          </ul>
+          <p>I dedicate time each week specifically for learning and experimenting with emerging tools and frameworks.</p>`
+        },
+        
+        // Image uploads and processing
+        "image_uploads": {
+          keywords: ["image uploads", "image processing", "file uploads", "activestorage"],
+          response: `<p>For handling image uploads and processing in Shared is Better, I implemented a comprehensive system:</p>
+          <ul>
+            <li class="list-item"><strong>File Storage:</strong> Used ActiveStorage with AWS S3 for scalable, secure cloud storage</li>
+            <li class="list-item"><strong>Validation:</strong> Implemented server-side validation for file types, size limits (max 5MB), and content scanning</li>
+            <li class="list-item"><strong>Image Processing:</strong> Used ImageProcessing gem with libvips for fast, memory-efficient image resizing</li>
+            <li class="list-item"><strong>Multiple Variants:</strong> Generated optimized versions for different use cases (thumbnails, previews, full-size)</li>
+            <li class="list-item"><strong>Progressive Loading:</strong> Implemented lazy loading with low-quality placeholders for faster page rendering</li>
+            <li class="list-item"><strong>Direct Uploads:</strong> Used ActiveStorage direct uploads to bypass server for large files</li>
+            <li class="list-item"><strong>Security:</strong> Implemented signed URLs with expiration and authorization checks</li>
+            <li class="list-item"><strong>Background Processing:</strong> Handled image transformations asynchronously using ActiveJob with Sidekiq</li>
+          </ul>
+          <p>This approach ensured a smooth user experience while maintaining security and performance, even with heavy upload traffic.</p>`
+        },
+        
+        // Rails design patterns
+        "rails_patterns": {
+          keywords: ["design patterns", "rails patterns", "architecture"],
+          response: `<p>I commonly implement these design patterns in my Rails projects:</p>
+          <ul>
+            <li class="list-item"><strong>Service Objects:</strong> For complex business logic that doesn't belong in models or controllers</li>
+            <li class="list-item"><strong>Form Objects:</strong> To handle complex forms with validations spanning multiple models</li>
+            <li class="list-item"><strong>Query Objects:</strong> To encapsulate complex database queries and keep models clean</li>
+            <li class="list-item"><strong>Presenters/Decorators:</strong> Using tools like Draper to keep presentation logic out of models and views</li>
+            <li class="list-item"><strong>Concerns:</strong> For shared functionality between models while avoiding deep inheritance</li>
+            <li class="list-item"><strong>Value Objects:</strong> For immutable objects representing domain concepts (like Money, DateRange)</li>
+            <li class="list-item"><strong>Policy Objects:</strong> Using Pundit for authorization logic</li>
+            <li class="list-item"><strong>Observer Pattern:</strong> For event handling using ActiveSupport::Notifications</li>
+          </ul>
+          <p>These patterns help maintain separation of concerns and make the codebase more maintainable as it grows in complexity.</p>`
+        },
+        
+        // AV systems experience
+        "av_systems": {
+          keywords: ["av systems", "global unified", "crestron", "av integration"],
+          response: `<p>As a Field Service Technician at Global Unified Solution Services (2023-2025), I gained extensive experience with AV systems including:</p>
+          <ul>
+            <li class="list-item">Commissioning and testing systems with Crestron, Biamp, QSC, Cisco, Polycom, and more</li>
+            <li class="list-item">Troubleshooting complex AV setups both remotely and on-site</li>
+            <li class="list-item">Building and managing AV racks with proper cable management</li>
+            <li class="list-item">Installing displays, projectors, and video walls from brands like Samsung, LG, and Sony</li>
+            <li class="list-item">Documenting system configurations and creating commissioning reports</li>
+            <li class="list-item">Training junior technicians on AV system setup and testing</li>
+          </ul>
+          <p>I'm also Crestron Level 1 certified and currently pursuing Crestron Level 2 and CTS certifications.</p>`
+        },
+        
+        // Shared is Better platform
+        "shared_is_better": {
+          keywords: ["shared is better", "community platform", "resource sharing"],
+          response: `<p>Shared is Better (<a href="http://sharedisbetter.com/" target="_blank">sharedisbetter.com</a>) is a feature-rich community platform I developed using Ruby on Rails. It enables:</p>
+          <ul>
+            <li class="list-item">Community creation and management with role-based permissions</li>
+            <li class="list-item">Resource sharing with state management (upcoming, available, taken, etc.)</li>
+            <li class="list-item">Event organization with RSVP capabilities</li>
+            <li class="list-item">Real-time messaging and notifications</li>
+            <li class="list-item">Content moderation workflows</li>
+          </ul>
+          <p>The platform uses Rails 7.1, PostgreSQL, Hotwire (Turbo/Stimulus), TailwindCSS, and various gems for authentication, authorization, and other features.</p>
+          <p>What specific aspect of this project would you like to know more about? You could ask about the real-time messaging, resource sharing system, or community management features.</p>`
+        },
+        
+        // Add the missing handler for mentoring junior developers
+        "mentoring": {
+          keywords: ["mentoring", "junior developer", "approach to mentoring"],
+          response: `<p>My approach to mentoring junior developers focuses on:</p>
+          <ul>
+            <li class="list-item"><strong>Supportive Environment:</strong> Creating a space where questions are encouraged and mistakes are viewed as learning opportunities</li>
+            <li class="list-item"><strong>Pair Programming:</strong> Regular sessions to demonstrate practical problem-solving and coding techniques</li>
+            <li class="list-item"><strong>Constructive Code Reviews:</strong> Providing specific, actionable feedback that educates rather than criticizes</li>
+            <li class="list-item"><strong>Graduated Challenges:</strong> Assigning tasks that progressively build skills and confidence</li>
+            <li class="list-item"><strong>Resource Sharing:</strong> Recommending articles, courses, and tools tailored to their learning needs</li>
+            <li class="list-item"><strong>Recognition:</strong> Celebrating progress and achievements to build confidence</li>
+            <li class="list-item"><strong>Technical Context:</strong> Explaining not just how to implement features but why certain approaches are chosen</li>
+          </ul>
+          <p>I believe effective mentoring accelerates professional growth and creates more cohesive teams with shared knowledge and practices.</p>`
+        },
+        
+        // First, fix the CI/CD pipeline question handler by modifying the conditions
+        "ci_cd_pipeline": {
+          keywords: ["ci/cd", "pipeline", "deployment", "implement", "manage"],
+          response: `<p>I've implemented robust CI/CD pipelines using tools like CircleCI and GitHub Actions. My approach included:</p>
+          <ul>
+            <li class="list-item"><strong>Code Quality Checks:</strong> Running Rubocop for static code analysis to enforce style guidelines before every deploy</li>
+            <li class="list-item"><strong>Automated Testing:</strong> Executing the full RSpec test suite to ensure all tests pass before allowing deployment</li>
+            <li class="list-item"><strong>Test Coverage:</strong> Verifying test coverage meets minimum thresholds using tools like SimpleCov</li>
+            <li class="list-item"><strong>Branch Protection:</strong> Requiring passing builds and code reviews before merging to main branches</li>
+            <li class="list-item"><strong>Staged Deployments:</strong> Implementing automated deployments to staging environments for review</li>
+            <li class="list-item"><strong>Infrastructure as Code:</strong> Using tools like Terraform for consistent environment configuration</li>
+            <li class="list-item"><strong>Deployment Documentation:</strong> Creating comprehensive deployment guides and rollback procedures</li>
+          </ul>
+          <p>This approach significantly reduced deployment errors and improved our team's development velocity while maintaining high code quality standards.</p>`
+        },
+        
+        // Ensure we have a handler for "stand out as a fullstack developer"
+        "standout_developer_fullstack": {
+          keywords: ["stand out", "makes you", "fullstack", "developer"],
+          response: `<p>What makes me stand out as a fullstack developer:</p>
+          <ul>
+            <li class="list-item"><strong>End-to-End Ownership:</strong> I comfortably handle everything from database design to frontend polishing, taking full responsibility for features</li>
+            <li class="list-item"><strong>Technical Versatility:</strong> My experience spans both traditional development (Rails/JS) and AV systems integration, giving me a unique perspective</li>
+            <li class="list-item"><strong>Performance Focus:</strong> I prioritize application performance at all levels - database optimization, efficient backend code, and responsive frontends</li>
+            <li class="list-item"><strong>User-Centered Design:</strong> I think beyond code to how features actually enhance the user experience</li>
+            <li class="list-item"><strong>Continuous Learning:</strong> I actively stay current with emerging technologies and best practices through communities, courses, and practical experimentation</li>
+            <li class="list-item"><strong>Communication Skills:</strong> I excel at translating technical concepts for non-technical stakeholders and collaborating effectively with cross-functional teams</li>
+          </ul>
+          <p>This combination of technical depth, breadth of experience, and soft skills allows me to deliver complete solutions that are both technically sound and user-friendly.</p>`
+        },
+        
+        // Also ensure we handle database optimization questions correctly
+        "database_optimization": {
+          keywords: ["database", "performance", "optimize", "strategies"],
+          response: `<p>For database performance optimization, I've implemented several strategies:</p>
+          <ul>
+            <li class="list-item"><strong>N+1 Query Prevention:</strong> Used the Bullet gem to identify and fix N+1 query issues during development</li>
+            <li class="list-item"><strong>Eager Loading:</strong> Implemented proper includes/preload/eager_load to reduce database roundtrips</li>
+            <li class="list-item"><strong>Efficient Indexing:</strong> Created targeted indexes based on query patterns and used tools like pg_stat_statements to identify slow queries</li>
+            <li class="list-item"><strong>Query Optimization:</strong> Rewritten complex queries using EXPLAIN ANALYZE for guidance and used database-specific features like PostgreSQL's array functions</li>
+            <li class="list-item"><strong>Connection Pooling:</strong> Configured proper pool sizes based on workload characteristics</li>
+            <li class="list-item"><strong>Caching Strategies:</strong> Implemented multi-level caching with Redis for frequently accessed data</li>
+            <li class="list-item"><strong>Background Processing:</strong> Moved heavy database operations to background jobs using Sidekiq</li>
+            <li class="list-item"><strong>Database Maintenance:</strong> Regularly ran VACUUM and ANALYZE on PostgreSQL to maintain performance</li>
+          </ul>
+          <p>These approaches consistently improved application response times and allowed for better scalability under increasing load.</p>`
+        },
+        
+        // Fix the Shared is Better question handler to ensure URLs are properly displayed
+        "shared_is_better_full": {
+          keywords: ["shared is better", "community", "platform", "resource", "sharing"],
+          response: `<p>Shared is Better (<a href="http://sharedisbetter.com/" target="_blank">sharedisbetter.com</a>) is a feature-rich community platform I developed using Ruby on Rails. It enables:</p>
+          <ul>
+            <li class="list-item">Community creation and management with role-based permissions</li>
+            <li class="list-item">Resource sharing with state management (available, taken, etc.)</li>
+            <li class="list-item">Event organization with RSVP capabilities</li>
+            <li class="list-item">Real-time messaging and notifications</li>
+            <li class="list-item">Content moderation workflows</li>
+          </ul>
+          <p>The platform uses Rails 7.1, PostgreSQL, Hotwire (Turbo/Stimulus), TailwindCSS, and various gems for authentication, authorization, and other features.</p>
+          <p>What specific aspect of this project would you like to know more about?</p>`
+        },
+
+        // Add handler for image uploads and processing in Shared is Better
+        "image_uploads_shared_better": {
+          keywords: ["image uploads", "image processing", "file uploads", "activestorage", "shared is better"],
+          response: `<p>For handling image uploads and processing in Shared is Better, I implemented a comprehensive system:</p>
+          <ul>
+            <li class="list-item"><strong>File Storage:</strong> Used ActiveStorage with AWS S3 for scalable, secure cloud storage</li>
+            <li class="list-item"><strong>Validation:</strong> Implemented server-side validation for file types, size limits (max 5MB), and content scanning</li>
+            <li class="list-item"><strong>Image Processing:</strong> Used ImageProcessing gem with libvips for fast, memory-efficient image resizing</li>
+            <li class="list-item"><strong>Multiple Variants:</strong> Generated optimized versions for different use cases (thumbnails, previews, full-size)</li>
+            <li class="list-item"><strong>Progressive Loading:</strong> Implemented lazy loading with low-quality placeholders for faster page rendering</li>
+            <li class="list-item"><strong>Direct Uploads:</strong> Used ActiveStorage direct uploads to bypass server for large files</li>
+            <li class="list-item"><strong>Security:</strong> Implemented signed URLs with expiration and authorization checks</li>
+            <li class="list-item"><strong>Background Processing:</strong> Handled image transformations asynchronously using ActiveJob with Sidekiq</li>
+          </ul>
+          <p>This approach ensured a smooth user experience while maintaining security and performance, even with heavy upload traffic.</p>`
+        },
+
+        // Add handler for authentication and authorization in Rails
+        "authentication_authorization_rails": {
+          keywords: ["authentication", "authorization", "auth", "rails"],
+          response: `<p>For authentication and authorization in Rails applications, I typically implement:</p>
+          <ul>
+            <li class="list-item"><strong>Authentication:</strong> Devise gem with customizations for specific requirements (confirmable, recoverable, rememberable)</li>
+            <li class="list-item"><strong>OAuth Integration:</strong> OmniAuth for social login options (Google, GitHub, etc.)</li>
+            <li class="list-item"><strong>API Authentication:</strong> JWT or token-based authentication for RESTful APIs with proper expiration handling</li>
+            <li class="list-item"><strong>Authorization:</strong> Pundit policies for fine-grained permission control based on user roles and resource ownership</li>
+            <li class="list-item"><strong>Role Management:</strong> Custom role implementation or Rolify gem depending on complexity needs</li>
+            <li class="list-item"><strong>Security Hardening:</strong> Protection against CSRF, XSS, SQL injection, and implementing proper password policies</li>
+            <li class="list-item"><strong>Rate Limiting:</strong> Using Rack::Attack to prevent abuse and brute force attacks</li>
+            <li class="list-item"><strong>Audit Logging:</strong> Tracking authentication events and permission changes for security monitoring</li>
+          </ul>
+          <p>This comprehensive approach provides secure, flexible user management while maintaining good separation of concerns throughout the application.</p>`
+        },
+
+        // Add handler for Rails design patterns
+        "rails_design_patterns": {
+          keywords: ["design pattern", "architecture", "rails"],
+          response: `<p>I commonly implement these design patterns in my Rails projects:</p>
+          <ul>
+            <li class="list-item"><strong>Service Objects:</strong> For complex business logic that doesn't belong in models or controllers</li>
+            <li class="list-item"><strong>Form Objects:</strong> To handle complex forms with validations spanning multiple models</li>
+            <li class="list-item"><strong>Query Objects:</strong> To encapsulate complex database queries and keep models clean</li>
+            <li class="list-item"><strong>Presenters/Decorators:</strong> Using tools like Draper to keep presentation logic out of models and views</li>
+            <li class="list-item"><strong>Concerns:</strong> For shared functionality between models while avoiding deep inheritance</li>
+            <li class="list-item"><strong>Value Objects:</strong> For immutable objects representing domain concepts (like Money, DateRange)</li>
+            <li class="list-item"><strong>Policy Objects:</strong> Using Pundit for authorization logic</li>
+            <li class="list-item"><strong>Observer Pattern:</strong> For event handling using ActiveSupport::Notifications</li>
+          </ul>
+          <p>These patterns help maintain separation of concerns and make the codebase more maintainable as it grows in complexity.</p>`
+        }
+      };
+      
+      // Function to toggle theme
+      themeToggle.addEventListener('click', function() {
+        document.documentElement.classList.toggle('dark-theme');
+        localStorage.setItem('darkTheme', document.documentElement.classList.contains('dark-theme'));
+      });
+      
+      // Check for saved theme preference
+      if (localStorage.getItem('darkTheme') === 'true') {
+        document.documentElement.classList.add('dark-theme');
+      }
+      
+      // Reveal resume button event
+      revealResumeBtn.addEventListener('click', function() {
+        // Matrix-style transition effect
+        chatContainer.classList.add('matrix-effect');
+        
+        setTimeout(() => {
+          chatContainer.style.display = 'none';
+          traditionalResume.style.display = 'block';
+          traditionalResume.classList.add('matrix-reveal');
+        }, 2000);
+      });
+      
+      // Function to add a message to the chat
+      function addMessage(text, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        
+        // Handle lists in AI responses
+        if (!isUser && text.includes('<ul>')) {
+          bubbleDiv.innerHTML = text;
+        } else {
+          bubbleDiv.textContent = text;
+        }
+        
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        const now = new Date();
+        timeDiv.textContent = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+        
+        messageDiv.appendChild(bubbleDiv);
+        bubbleDiv.appendChild(timeDiv);
+        
+        // Add token usage for AI responses
+        if (!isUser) {
+          // Calculate tokens (rough estimate: 1 token ≈ 4 chars)
+          const tokensUsed = Math.ceil(text.length / 4);
+          tokenUsage.total += tokensUsed;
+          tokenUsage.byQuestion.push(tokensUsed);
+          
+          const tokenDiv = document.createElement('div');
+          tokenDiv.className = 'token-usage';
+          tokenDiv.textContent = `${currentAgent} agent • ${tokensUsed} tokens`;
+          bubbleDiv.appendChild(tokenDiv);
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Function to show typing indicator
+      function showTypingIndicator() {
+        typingIndicator.style.display = 'block';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Function to hide typing indicator
+      function hideTypingIndicator() {
+        typingIndicator.style.display = 'none';
+      }
+      
+      // Function to identify topics in user input
+      function identifyTopics(input) {
+        const inputLower = input.toLowerCase();
+        const foundTopics = [];
+        
+        for (const category in topicCategories) {
+          for (const topic of topicCategories[category]) {
+            if (inputLower.includes(topic.toLowerCase())) {
+              foundTopics.push({ category, topic });
+            }
+          }
+        }
+        
+        return foundTopics;
+      }
+      
+      // Function to suggest related questions based on identified topics
+      function suggestRelatedQuestions(topics) {
+        const relatedQuestions = [];
+        
+        if (topics.length > 0) {
+          // Get the main category from identified topics
+          const categories = [...new Set(topics.map(t => t.category))];
+          
+          // For each category, find relevant questions
+          for (const category of categories) {
+            const categoryQuestions = allQuestions.filter(q => {
+              const qLower = q.toLowerCase();
+              return topicCategories[category].some(topic => qLower.includes(topic.toLowerCase()));
+            });
+            
+            // Add up to 2 questions per category
+            if (categoryQuestions.length > 0) {
+              relatedQuestions.push(...categoryQuestions.slice(0, 2));
+            }
+          }
+        }
+        
+        // If we couldn't find related questions, return some general ones
+        if (relatedQuestions.length === 0) {
+          return allQuestions.sort(() => 0.5 - Math.random()).slice(0, 3);
+        }
+        
+        // Ensure we have at least 3 questions, adding random ones if needed
+        while (relatedQuestions.length < 3) {
+          const randomQuestion = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+          if (!relatedQuestions.includes(randomQuestion)) {
+            relatedQuestions.push(randomQuestion);
+          }
+        }
+        
+        return relatedQuestions.slice(0, 3);
+      }
+      
+      // Function to generate AI response
+      function generateResponse(userInput) {
+        const input = userInput.toLowerCase();
+        
+        // Check if this is a direct query from a suggested question
+        const exactMatch = allQuestions.find(q => q.toLowerCase() === input.toLowerCase());
+        if (exactMatch) {
+          // If it matches exactly a predefined question, we'll prioritize that response logic
+          questionCount++;
+          
+          // Track the category of this question
+          const category = questionToCategoryMap[exactMatch];
+          if (category) {
+            revealedCategories.add(category);
+          }
+          
+          // After 5 questions, show reveal button
+          if (questionCount >= 5) {
+            revealResumeBtn.style.display = 'block';
+          }
+        }
+        
+        // Wait between 1-2 seconds before responding to simulate AI thinking
+        showTypingIndicator();
+        
+        setTimeout(() => {
+          hideTypingIndicator();
+          
+          // Find matching response from our question-answer map
+          let matchFound = false;
+          
+          // Check for direct keyword matches first
+          for (const [key, qaItem] of Object.entries(questionAnswerMap)) {
+            // Check if the input contains multiple keywords from this category
+            const keywordMatches = qaItem.keywords.filter(keyword => input.includes(keyword.toLowerCase()));
+            
+            if (keywordMatches.length >= 1) {
+              addMessage(qaItem.response);
+              matchFound = true;
+              break;
+            }
+          }
+          
+          // If no match was found in our direct mapping, fall back to the more generic answers
+          if (!matchFound) {
+            if (input.includes('hello') || input.includes('hi') || input.includes('hey') || input === '') {
+              addMessage(`Hi there! I'm Neil's interactive resume. Feel free to ask me about his experience, skills, or projects. You can also click on one of the suggested questions below.`);
+            } else if (input.includes('education') || input.includes('degree') || input.includes('study')) {
+            let response = `<p>My educational background includes:</p><ul>`;
+            resumeData.education.forEach(edu => {
+              response += `<li class="list-item">${edu}</li>`;
+            });
+            response += `</ul><p>This combination of technical and business education gives me a well-rounded perspective for solving problems.</p>`;
+            addMessage(response);
+            } else if (input.includes('skill') || input.includes('technology') || input.includes('tech stack')) {
+            const response = `<p>My technical skills include:</p>
+            <ul>
+              <li class="list-item"><strong>Languages & Frameworks:</strong> ${resumeData.skills.languages}</li>
+              <li class="list-item"><strong>DevOps & Tools:</strong> ${resumeData.skills.devops}</li>
+              <li class="list-item"><strong>AI & Productivity:</strong> ${resumeData.skills.ai}</li>
+              <li class="list-item"><strong>Project Experience:</strong> ${resumeData.skills.project}</li>
+              <li class="list-item"><strong>Certifications:</strong> ${resumeData.skills.certifications}</li>
+              <li class="list-item"><strong>Soft Skills:</strong> ${resumeData.skills.soft}</li>
+            </ul>
+            <p>I'm always learning new technologies and expanding my skill set.</p>`;
+            addMessage(response);
+            } else if (input.includes('ai') || input.includes('ai tools') || input.includes('chatgpt') || input.includes('claude') || input.includes('development workflow')) {
+              const response = `<p>I leverage AI tools to enhance my development workflow in several ways:</p>
+              <ul>
+                <li class="list-item"><strong>Code Assistance:</strong> Using GitHub Copilot and Cursor IDE for intelligent code suggestions and autocompletion</li>
+                <li class="list-item"><strong>Problem Solving:</strong> Leveraging ChatGPT and Claude AI to brainstorm solutions and debug complex issues</li>
+                <li class="list-item"><strong>Test Generation:</strong> Creating comprehensive test cases and edge case scenarios</li>
+                <li class="list-item"><strong>Documentation:</strong> Generating and improving code documentation and API descriptions</li>
+                <li class="list-item"><strong>Code Refactoring:</strong> Identifying opportunities for code optimization and cleaner implementations</li>
+                <li class="list-item"><strong>Learning:</strong> Rapidly understanding new libraries and frameworks through interactive explanations</li>
+                <li class="list-item"><strong>Automation:</strong> Creating scripts for repetitive tasks and workflow improvements</li>
+            </ul>
+              <p>I've found that AI tools significantly boost productivity while maintaining code quality, especially when used thoughtfully alongside human expertise and review.</p>`;
+            addMessage(response);
+            } else if ((input.includes('av') && !input.includes('ai')) || input.includes('audio visual') || input.includes('global unified') || input.includes('crestron')) {
+              const response = `<p>As a Field Service Technician at Global Unified Solution Services (2023-2025), I gained extensive experience with AV systems including:</p>
+              <ul>
+                <li class="list-item">Commissioning and testing systems with Crestron, Biamp, QSC, Cisco, Polycom, and more</li>
+                <li class="list-item">Troubleshooting complex AV setups both remotely and on-site</li>
+                <li class="list-item">Building and managing AV racks with proper cable management</li>
+                <li class="list-item">Installing displays, projectors, and video walls from brands like Samsung, LG, and Sony</li>
+                <li class="list-item">Documenting system configurations and creating commissioning reports</li>
+                <li class="list-item">Training junior technicians on AV system setup and testing</li>
+            </ul>
+              <p>I'm also Crestron Level 1 certified and currently pursuing Crestron Level 2 and CTS certifications.</p>`;
+            addMessage(response);
+            } else if (input.includes('mentoring') || input.includes('junior developer') || input.includes('approach to mentoring')) {
+              const response = `<p>My approach to mentoring junior developers focuses on:</p>
+              <ul>
+                <li class="list-item"><strong>Supportive Environment:</strong> Creating a space where questions are encouraged and mistakes are viewed as learning opportunities</li>
+                <li class="list-item"><strong>Pair Programming:</strong> Regular sessions to demonstrate practical problem-solving and coding techniques</li>
+                <li class="list-item"><strong>Constructive Code Reviews:</strong> Providing specific, actionable feedback that educates rather than criticizes</li>
+                <li class="list-item"><strong>Graduated Challenges:</strong> Assigning tasks that progressively build skills and confidence</li>
+                <li class="list-item"><strong>Resource Sharing:</strong> Recommending articles, courses, and tools tailored to their learning needs</li>
+                <li class="list-item"><strong>Recognition:</strong> Celebrating progress and achievements to build confidence</li>
+                <li class="list-item"><strong>Technical Context:</strong> Explaining not just how to implement features but why certain approaches are chosen</li>
+            </ul>
+              <p>I believe effective mentoring accelerates professional growth and creates more cohesive teams with shared knowledge and practices.</p>`;
+            addMessage(response);
+            } else if (input.includes('ci/cd') || input.includes('pipeline') || input.includes('deployment') || 
+                     (input.includes('implement') && input.includes('manage') && input.includes('ci'))) {
+              const response = `<p>I've implemented robust CI/CD pipelines using tools like CircleCI and GitHub Actions. My approach included:</p>
+              <ul>
+                <li class="list-item"><strong>Code Quality Checks:</strong> Running Rubocop for static code analysis to enforce style guidelines before every deploy</li>
+                <li class="list-item"><strong>Automated Testing:</strong> Executing the full RSpec test suite to ensure all tests pass before allowing deployment</li>
+                <li class="list-item"><strong>Test Coverage:</strong> Verifying test coverage meets minimum thresholds using tools like SimpleCov</li>
+                <li class="list-item"><strong>Branch Protection:</strong> Requiring passing builds and code reviews before merging to main branches</li>
+                <li class="list-item"><strong>Staged Deployments:</strong> Implementing automated deployments to staging environments for review</li>
+                <li class="list-item"><strong>Infrastructure as Code:</strong> Using tools like Terraform for consistent environment configuration</li>
+                <li class="list-item"><strong>Deployment Documentation:</strong> Creating comprehensive deployment guides and rollback procedures</li>
+            </ul>
+              <p>This approach significantly reduced deployment errors and improved our team's development velocity while maintaining high code quality standards.</p>`;
+            addMessage(response);
+            } else if (input.includes('ruby programming') || input.includes('experience with ruby')) {
+              const response = `<p>My experience with Ruby programming includes:</p>
+              <ul>
+                <li class="list-item"><strong>5+ years</strong> of professional Ruby development, primarily within Rails applications</li>
+                <li class="list-item"><strong>Backend services</strong> built with pure Ruby for API integrations and data processing</li>
+                <li class="list-item"><strong>Custom DSLs</strong> created for specific business domains to simplify complex operations</li>
+                <li class="list-item"><strong>Meta-programming techniques</strong> applied to create flexible, DRY code patterns</li>
+                <li class="list-item"><strong>Performance optimization</strong> for Ruby applications, including profiling and bottleneck identification</li>
+                <li class="list-item"><strong>Contribution</strong> to several open-source Ruby gems for community tools</li>
+              </ul>
+              <p>I particularly enjoy Ruby's elegant syntax and flexibility, which allows for both quick prototyping and maintainable production code.</p>`;
+              addMessage(response);
+            } else if (input.includes('ruby gems') || input.includes('experience with gems')) {
+              const response = `<p>My experience with Ruby gems includes working with a wide variety of libraries across multiple projects. Here are the key gems I've used extensively:</p>
+              
+              <p><strong>Core & Performance:</strong></p>
+              <ul>
+                <li class="list-item"><strong>Rails 7.1:</strong> The core framework for web application development</li>
+                <li class="list-item"><strong>Bootsnap:</strong> Significantly reduces application boot times by caching expensive operations</li>
+                <li class="list-item"><strong>PG:</strong> PostgreSQL adapter with strong performance optimizations</li>
+                <li class="list-item"><strong>Puma:</strong> Multi-threaded web server with concurrent request handling</li>
+              </ul>
+              
+              <p><strong>Frontend & UI:</strong></p>
+              <ul>
+                <li class="list-item"><strong>Turbo & Stimulus:</strong> Hotwire stack for reactive interfaces without heavy JavaScript</li>
+                <li class="list-item"><strong>Tailwind CSS:</strong> Utility-first CSS framework for rapid UI development</li>
+                <li class="list-item"><strong>View Component:</strong> Component-based view architecture for encapsulated, reusable UI elements</li>
+              </ul>
+              
+              <p><strong>Authentication & Authorization:</strong></p>
+              <ul>
+                <li class="list-item"><strong>Devise:</strong> Flexible authentication solution with modules for confirmable, recoverable, etc.</li>
+                <li class="list-item"><strong>Pundit:</strong> Object-oriented authorization system with policy objects</li>
+                <li class="list-item"><strong>Rack-Attack:</strong> Rack middleware for blocking & throttling abusive requests</li>
+              </ul>
+              
+              <p><strong>Data & Storage:</strong></p>
+              <ul>
+                <li class="list-item"><strong>AWS-SDK-S3:</strong> Integration with S3-compatible storage (including DigitalOcean Spaces)</li>
+                <li class="list-item"><strong>Active Storage Validations:</strong> Content-type, size, and dimension validations for uploads</li>
+                <li class="list-item"><strong>Image Processing:</strong> On-the-fly image transformations and optimization</li>
+                <li class="list-item"><strong>Redis:</strong> In-memory data store for caching and pub/sub functionality</li>
+              </ul>
+              
+              <p><strong>Background Processing & Performance:</strong></p>
+              <ul>
+                <li class="list-item"><strong>Sidekiq:</strong> Background job processing with Redis for scheduling and monitoring</li>
+                <li class="list-item"><strong>Counter Culture:</strong> Efficient counter caches for ActiveRecord associations</li>
+                <li class="list-item"><strong>Bullet:</strong> Detection and alerting for N+1 query issues during development</li>
+                <li class="list-item"><strong>Friendly ID:</strong> Human-readable slugs and permalinks with minimal performance impact</li>
+              </ul>
+              
+              <p><strong>Testing & Quality:</strong></p>
+              <ul>
+                <li class="list-item"><strong>RSpec:</strong> BDD testing framework with readable syntax and powerful matchers</li>
+                <li class="list-item"><strong>Factory Bot:</strong> Fixtures replacement with straightforward definition syntax</li>
+                <li class="list-item"><strong>Capybara:</strong> Feature testing through browser simulation</li>
+                <li class="list-item"><strong>SimpleCov:</strong> Code coverage analysis to identify untested areas</li>
+                <li class="list-item"><strong>Rubocop:</strong> Static code analysis and style enforcement</li>
+              </ul>
+              
+              <p>I also have experience creating custom gems for internal use and contributing to open source projects by submitting PRs for bug fixes and feature enhancements.</p>`;
+              addMessage(response);
+            } else if (input.includes('ruby version') || input.includes('version management')) {
+              const response = `<p>For Ruby version management, I use a multi-layered approach:</p>
+              <ul>
+                <li class="list-item"><strong>RVM/rbenv:</strong> For local development environments, allowing easy switching between Ruby versions</li>
+                <li class="list-item"><strong>.ruby-version files:</strong> To ensure consistency across development environments</li>
+                <li class="list-item"><strong>Gemfile ruby specification:</strong> Defining the required Ruby version for applications</li>
+                <li class="list-item"><strong>Docker:</strong> For containerized environments with specific Ruby versions</li>
+                <li class="list-item"><strong>CI configuration:</strong> Specifying exact Ruby versions in CI/CD pipelines</li>
+                <li class="list-item"><strong>Update strategy:</strong> Regular evaluation of new Ruby versions for performance and security benefits</li>
+              </ul>
+              <p>This comprehensive approach ensures consistent behavior across all environments while allowing controlled upgrades when beneficial.</p>`;
+              addMessage(response);
+            } else if (input.includes('experince') || input.includes('experience')) {
+              const response = `<p>My work experience includes:</p>
+              <ul>
+                <li class="list-item"><strong>Field Service Technician / AV Integration</strong> at Global Unified Solution Services (2023-2025)</li>
+                <li class="list-item"><strong>Fullstack Consultant / Development</strong> at Infogain India Pvt Ltd (2016-2022)</li>
+              </ul>
+              <p>Would you like to know more about either of these roles?</p>`;
+              addMessage(response);
+            } else if (input.includes('stand out') || input.includes('makes you') || (input.includes('fullstack') && input.includes('developer'))) {
+              const response = `<p>What makes me stand out as a fullstack developer:</p>
+              <ul>
+                <li class="list-item"><strong>End-to-End Ownership:</strong> I comfortably handle everything from database design to frontend polishing, taking full responsibility for features</li>
+                <li class="list-item"><strong>Technical Versatility:</strong> My experience spans both traditional development (Rails/JS) and AV systems integration, giving me a unique perspective</li>
+                <li class="list-item"><strong>Performance Focus:</strong> I prioritize application performance at all levels - database optimization, efficient backend code, and responsive frontends</li>
+                <li class="list-item"><strong>User-Centered Design:</strong> I think beyond code to how features actually enhance the user experience</li>
+                <li class="list-item"><strong>Continuous Learning:</strong> I actively stay current with emerging technologies and best practices through communities, courses, and practical experimentation</li>
+                <li class="list-item"><strong>Communication Skills:</strong> I excel at translating technical concepts for non-technical stakeholders and collaborating effectively with cross-functional teams</li>
+            </ul>
+              <p>This combination of technical depth, breadth of experience, and soft skills allows me to deliver complete solutions that are both technically sound and user-friendly.</p>`;
+            addMessage(response);
+            } else if ((input.includes('database') && (input.includes('performance') || input.includes('optimize'))) || 
+                     (input.includes('strategies') && input.includes('database'))) {
+              const response = `<p>For database performance optimization, I've implemented several strategies:</p>
+              <ul>
+                <li class="list-item"><strong>N+1 Query Prevention:</strong> Used the Bullet gem to identify and fix N+1 query issues during development</li>
+                <li class="list-item"><strong>Eager Loading:</strong> Implemented proper includes/preload/eager_load to reduce database roundtrips</li>
+                <li class="list-item"><strong>Efficient Indexing:</strong> Created targeted indexes based on query patterns and used tools like pg_stat_statements to identify slow queries</li>
+                <li class="list-item"><strong>Query Optimization:</strong> Rewritten complex queries using EXPLAIN ANALYZE for guidance and used database-specific features like PostgreSQL's array functions</li>
+                <li class="list-item"><strong>Connection Pooling:</strong> Configured proper pool sizes based on workload characteristics</li>
+                <li class="list-item"><strong>Caching Strategies:</strong> Implemented multi-level caching with Redis for frequently accessed data</li>
+                <li class="list-item"><strong>Background Processing:</strong> Moved heavy database operations to background jobs using Sidekiq</li>
+                <li class="list-item"><strong>Database Maintenance:</strong> Regularly ran VACUUM and ANALYZE on PostgreSQL to maintain performance</li>
+            </ul>
+              <p>These approaches consistently improved application response times and allowed for better scalability under increasing load.</p>`;
+            addMessage(response);
+            } else if (input.includes('shared is better') || 
+                  (input.includes('community') && input.includes('platform')) || 
+                  (input.includes('resource') && input.includes('sharing'))) {
+            const project = resumeData.projects[0]; // Shared is Better project
+            
+              // Base case for Shared is Better
+              const response = `<p>Shared is Better (<a href="http://sharedisbetter.com/" target="_blank">sharedisbetter.com</a>) is a feature-rich community platform I developed using Ruby on Rails. It enables:</p>
+              <ul>
+                <li class="list-item">Community creation and management with role-based permissions</li>
+                <li class="list-item">Resource sharing with state management (available, taken, etc.)</li>
+                <li class="list-item">Event organization with RSVP capabilities</li>
+                <li class="list-item">Real-time messaging and notifications</li>
+                <li class="list-item">Content moderation workflows</li>
+              </ul>
+              <p>The platform uses Rails 7.1, PostgreSQL, Hotwire (Turbo/Stimulus), TailwindCSS, and various gems for authentication, authorization, and other features.</p>
+              <p>What specific aspect of this project would you like to know more about?</p>`;
+              addMessage(response);
+            } else if (input.includes('image') && (input.includes('upload') || input.includes('processing')) && (input.includes('shared') || input.includes('better'))) {
+              const response = `<p>For handling image uploads and processing in Shared is Better, I implemented a comprehensive system:</p>
+              <ul>
+                <li class="list-item"><strong>File Storage:</strong> Used ActiveStorage with AWS S3 for scalable, secure cloud storage</li>
+                <li class="list-item"><strong>Validation:</strong> Implemented server-side validation for file types, size limits (max 5MB), and content scanning</li>
+                <li class="list-item"><strong>Image Processing:</strong> Used ImageProcessing gem with libvips for fast, memory-efficient image resizing</li>
+                <li class="list-item"><strong>Multiple Variants:</strong> Generated optimized versions for different use cases (thumbnails, previews, full-size)</li>
+                <li class="list-item"><strong>Progressive Loading:</strong> Implemented lazy loading with low-quality placeholders for faster page rendering</li>
+                <li class="list-item"><strong>Direct Uploads:</strong> Used ActiveStorage direct uploads to bypass server for large files</li>
+                <li class="list-item"><strong>Security:</strong> Implemented signed URLs with expiration and authorization checks</li>
+                <li class="list-item"><strong>Background Processing:</strong> Handled image transformations asynchronously using ActiveJob with Sidekiq</li>
+                  </ul>
+              <p>This approach ensured a smooth user experience while maintaining security and performance, even with heavy upload traffic.</p>`;
+              addMessage(response);
+            } else if ((input.includes('authentication') || input.includes('authorization') || input.includes('auth')) && input.includes('rails')) {
+              const response = `<p>For authentication and authorization in Rails applications, I typically implement:</p>
+              <ul>
+                <li class="list-item"><strong>Authentication:</strong> Devise gem with customizations for specific requirements (confirmable, recoverable, rememberable)</li>
+                <li class="list-item"><strong>OAuth Integration:</strong> OmniAuth for social login options (Google, GitHub, etc.)</li>
+                <li class="list-item"><strong>API Authentication:</strong> JWT or token-based authentication for RESTful APIs with proper expiration handling</li>
+                <li class="list-item"><strong>Authorization:</strong> Pundit policies for fine-grained permission control based on user roles and resource ownership</li>
+                <li class="list-item"><strong>Role Management:</strong> Custom role implementation or Rolify gem depending on complexity needs</li>
+                <li class="list-item"><strong>Security Hardening:</strong> Protection against CSRF, XSS, SQL injection, and implementing proper password policies</li>
+                <li class="list-item"><strong>Rate Limiting:</strong> Using Rack::Attack to prevent abuse and brute force attacks</li>
+                <li class="list-item"><strong>Audit Logging:</strong> Tracking authentication events and permission changes for security monitoring</li>
+              </ul>
+              <p>This comprehensive approach provides secure, flexible user management while maintaining good separation of concerns throughout the application.</p>`;
+            addMessage(response);
+            } else if ((input.includes('design pattern') || input.includes('architecture')) && input.includes('rails')) {
+              const response = `<p>I commonly implement these design patterns in my Rails projects:</p>
+              <ul>
+                <li class="list-item"><strong>Service Objects:</strong> For complex business logic that doesn't belong in models or controllers</li>
+                <li class="list-item"><strong>Form Objects:</strong> To handle complex forms with validations spanning multiple models</li>
+                <li class="list-item"><strong>Query Objects:</strong> To encapsulate complex database queries and keep models clean</li>
+                <li class="list-item"><strong>Presenters/Decorators:</strong> Using tools like Draper to keep presentation logic out of models and views</li>
+                <li class="list-item"><strong>Concerns:</strong> For shared functionality between models while avoiding deep inheritance</li>
+                <li class="list-item"><strong>Value Objects:</strong> For immutable objects representing domain concepts (like Money, DateRange)</li>
+                <li class="list-item"><strong>Policy Objects:</strong> Using Pundit for authorization logic</li>
+                <li class="list-item"><strong>Observer Pattern:</strong> For event handling using ActiveSupport::Notifications</li>
+              </ul>
+              <p>These patterns help maintain separation of concerns and make the codebase more maintainable as it grows in complexity.</p>`;
+              addMessage(response);
+            } else {
+              // If we still don't have a specific answer, provide a helpful response
+              addMessage(`I don't have specific information about that, but you can ask me about Neil's experience with Ruby on Rails, AV systems integration, specific projects like Shared is Better, his education, or technical skills. What would you like to know more about?`);
+            }
+          }
+          
+          // Identify topics in the user's query
+          const topics = identifyTopics(input);
+          
+          // Display contextually relevant suggested questions
+          displaySuggestedQuestions(topics);
+        }, Math.random() * 1000 + 1000); // Random delay between 1-2 seconds
+      }
+      
+      // Function to display contextually relevant suggested questions
+      function displaySuggestedQuestions(topics = []) {
+        suggestedQuestions.innerHTML = '';
+        
+        // Get questions related to identified topics
+        let questions = suggestRelatedQuestions(topics);
+        
+        // Filter based on current agent if not based on specific topics
+        if (topics.length === 0 && currentAgent) {
+          // Use agent-specific questions
+          questions = agentQuestions[currentAgent] || questions;
+        }
+        
+        // Filter out already asked questions
+        let availableQuestions = questions.filter(q => !askedQuestions.has(q));
+        
+        // If we have no available questions from this agent, try to get some from all agents
+        if (availableQuestions.length < 3) {
+          // First try from the current agent's questions
+          const agentSpecificQuestions = agentQuestions[currentAgent] || [];
+          const remainingAgentQuestions = agentSpecificQuestions.filter(q => !askedQuestions.has(q));
+          
+          // If we still need more, get from all agents
+          if (remainingAgentQuestions.length < 3) {
+            // Get random questions from all agents, prioritizing current agent
+            const randomUnasked = allAgentQuestions
+              .filter(q => !askedQuestions.has(q))
+              .sort((a, b) => {
+                // Prioritize current agent's questions
+                const isCurrentAgentA = agentQuestions[currentAgent]?.includes(a) || false;
+                const isCurrentAgentB = agentQuestions[currentAgent]?.includes(b) || false;
+                if (isCurrentAgentA && !isCurrentAgentB) return -1;
+                if (!isCurrentAgentA && isCurrentAgentB) return 1;
+                // Otherwise random
+                return 0.5 - Math.random();
+              })
+              .slice(0, 3 - Math.min(remainingAgentQuestions.length, 3));
+            
+            availableQuestions = [...remainingAgentQuestions, ...randomUnasked];
+          } else {
+            availableQuestions = remainingAgentQuestions;
+          }
+        }
+        
+        // Show up to 3 diverse questions
+        const displayQuestions = [];
+        
+        // Get questions trying to avoid similar ones
+        for (const q of availableQuestions) {
+          // Simple check to avoid similar questions - just ensure questions start differently
+          const firstFewWords = q.split(' ').slice(0, 3).join(' ').toLowerCase();
+          const isSimilar = displayQuestions.some(existingQ => 
+            existingQ.split(' ').slice(0, 3).join(' ').toLowerCase() === firstFewWords
+          );
+          
+          if (!isSimilar) {
+            displayQuestions.push(q);
+            if (displayQuestions.length >= 3) break;
+          }
+        }
+        
+        // If we still need more questions due to similarity filtering
+        if (displayQuestions.length < 3) {
+          for (const q of availableQuestions) {
+            if (!displayQuestions.includes(q)) {
+              displayQuestions.push(q);
+              if (displayQuestions.length >= 3) break;
+            }
+          }
+        }
+        
+        displayQuestions.forEach(question => {
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'suggested-question';
+          questionDiv.textContent = question;
+          questionDiv.addEventListener('click', () => {
+            chatInput.value = question;
+            // Add to asked questions set
+            askedQuestions.add(question);
+            // Track category for diversity
+            const category = questionToCategoryMap[question];
+            if (category) {
+              revealedCategories.add(category);
+            }
+            // Increment question count for revealing resume
+            questionCount++;
+            
+            // After 5 questions, show reveal button
+            if (questionCount >= 5) {
+              revealResumeBtn.style.display = 'block';
+            }
+            
+            sendMessage();
+          });
+          suggestedQuestions.appendChild(questionDiv);
+        });
+      }
+      
+      // Function to send a message
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message !== '') {
+          // Check if this is a suggested question being asked
+          const exactMatch = allQuestions.find(q => q === message);
+          if (exactMatch) {
+            askedQuestions.add(message);
+            // Track category for this question
+            const category = questionToCategoryMap[exactMatch];
+            if (category) {
+              revealedCategories.add(category);
+            }
+            // Don't increment here as it will be incremented in generateResponse for exact matches
+          } else {
+            // Increment question count for free-form questions too
+            questionCount++;
+            
+            // After 5 questions, show reveal button
+            if (questionCount >= 5) {
+              revealResumeBtn.style.display = 'block';
+            }
+          }
+          
+          addMessage(message, true);
+          chatInput.value = '';
+          generateResponse(message);
+        }
+      }
+      
+      // Event listeners
+      sendButton.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      // Agent selector functionality
+      agentSelector.addEventListener('click', function(e) {
+        if (e.target.classList.contains('agent-option')) {
+          // Update active class
+          document.querySelectorAll('.agent-option').forEach(opt => {
+            opt.classList.remove('active');
+          });
+          e.target.classList.add('active');
+          
+          // Update current agent
+          currentAgent = e.target.getAttribute('data-agent');
+          
+          // Update suggested questions based on new agent
+          displaySuggestedQuestions();
+        }
+      });
+      
+      // Initial messages and suggested questions
+      addMessage(`Hello! I'm Neil's interactive resume. Ask me anything about his experience, skills, or background to learn more about what makes him a great candidate. For the most complete and accurate information, please use the "Reveal Full Resume" button below after exploring the chat interface.`, false);
+      displaySuggestedQuestions();
+      
+      // Show the reveal resume button right away
+      revealResumeBtn.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
