@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Neil Fernandes - AI Chat Resume</title>
+  <!-- GitHub Buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
   <style>
     :root {
       --primary-color: #007bff;
@@ -283,6 +285,59 @@
       font-size: 24px;
       color: var(--secondary-text);
     }
+    
+    /* GitHub buttons styling */
+    .github-buttons {
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    /* Fork me ribbon */
+    .fork-ribbon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 150px;
+      overflow: hidden;
+      z-index: 9999;
+    }
+    
+    .fork-ribbon a {
+      position: absolute;
+      top: 42px;
+      right: -43px;
+      transform: rotate(45deg);
+      display: block;
+      width: 230px;
+      padding: 8px 0;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    @media (max-width: 768px) {
+      .github-buttons {
+        position: static;
+        transform: none;
+        margin-top: 8px;
+        justify-content: center;
+      }
+      
+      .fork-ribbon {
+        display: none;
+      }
+    }
+    
     .context-suggestion {
       font-style: italic;
       margin-top: 10px;
@@ -563,6 +618,43 @@
     .disclaimer-content.expanded .disclaimer-full {
       display: inline;
     }
+    
+    /* Projects section styling */
+    .project-section {
+      margin-bottom: var(--space-md);
+    }
+    
+    .project-item {
+      margin-bottom: var(--space-md);
+    }
+    
+    .project-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: var(--space-xs);
+      color: var(--text-color);
+    }
+    
+    .project-link {
+      font-size: 14px;
+      margin-bottom: var(--space-xs);
+    }
+    
+    .project-link a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .project-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .project-description {
+      font-size: 14px;
+      color: var(--secondary-text);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -577,6 +669,12 @@
         </svg>
         LinkedIn
       </a>
+    </div>
+    <div class="github-buttons">
+      <!-- Place this tag where you want the button to render. -->
+      <a class="github-button" href="https://github.com/neil-sib/neil-sib.github.io/fork" data-size="large" data-show-count="true" aria-label="Fork neil-sib/neil-sib.github.io on GitHub">Fork</a>
+      <!-- Place this tag where you want the button to render. -->
+      <a class="github-button" href="https://github.com/neil-sib/neil-sib.github.io" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star neil-sib/neil-sib.github.io on GitHub">Star</a>
     </div>
     <button class="theme-toggle" id="theme-toggle">🌓</button>
   </div>
@@ -669,6 +767,21 @@
       </div>
       <div class="skills-flex">
         <span><strong>Soft Skills:</strong> Strong communicator, self-starter, highly adaptable</span>
+      </div>
+    </div>
+    
+    <div class="section-title">PROJECTS</div>
+    <div class="project-section">
+      <div class="project-item">
+        <div class="project-title">Shared is Better Inc</div>
+        <div class="project-link"><a href="https://sharedisbetter.com" target="_blank">sharedisbetter.com</a></div>
+        <div class="project-description">A feature-rich community platform for resource sharing, event organization, and community building, built with Ruby on Rails.</div>
+      </div>
+      
+      <div class="project-item">
+        <div class="project-title">Neil's Public Dashboard</div>
+        <div class="project-link"><a href="https://codepen.io/unosempre1/pen/LYXOMzX" target="_blank">View on CodePen</a></div>
+        <div class="project-description">Interactive dashboard built with modern web technologies demonstrating data visualization capabilities.</div>
       </div>
     </div>
   </div>
